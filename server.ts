@@ -10,12 +10,16 @@ import { parse } from "url";
 import next from "next";
 import { setupCronJobs } from "./lib/cron";
 
-const dev = process.env.NODE_ENV !== "production";
 const hostname = "0.0.0.0";
 const port = parseInt(process.env.PORT || "3000", 10);
 
-// Initialize Next.js
-const app = next({ dev, hostname, port });
+// Force production mode
+const app = next({ 
+  dev: false,
+  hostname, 
+  port,
+  dir: __dirname
+});
 const handle = app.getRequestHandler();
 
 async function main() {
@@ -39,7 +43,7 @@ async function main() {
 
     server.listen(port, () => {
       console.log(`🚀 Server running at http://${hostname}:${port}/`);
-      console.log(`📊 Environment: ${dev ? "Development" : "Production"}`);
+      console.log(`📊 Environment: Production`);
       console.log(`⏰ Cron jobs are active`);
     });
   } catch (err) {
