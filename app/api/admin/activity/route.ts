@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-interface Activity {
-  id: string;
-  type: "blog" | "project" | "order" | "customer";
-  title: string;
-  description: string;
-  time: string;
-}
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {

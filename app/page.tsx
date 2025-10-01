@@ -14,6 +14,9 @@ import BackToTop from "@/components/ui/back-to-top";
 import FloatingContact from "@/components/ui/floating-contact";
 import { prisma } from "@/lib/prisma";
 
+// Force dynamic rendering to avoid database calls during build
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   // Fetch featured projects for homepage
   const projects = await prisma.project.findMany({
