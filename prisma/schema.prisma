@@ -1,0 +1,281 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  category    String
+  title       String
+  slug        String   @unique
+  excerpt     String
+  content     String   @db.Text
+  seoTitle    String
+  seoDescription String
+  keywords    String[]
+  imageUrl    String
+  author      String   @default("EvolvoAI Team")
+  publishDate DateTime @default(now())
+  readTime    Int      @default(5)
+  views       Int      @default(0)
+  status      PostStatus @default(DRAFT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([status])
+  @@index([publishDate])
+}
+
+model Contact {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  serviceType String
+  message     String   @db.Text
+  status      ContactStatus @default(NEW)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String   @default("website")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model TelegramPost {
+  id          String   @id @default(cuid())
+  postType    TelegramPostType
+  content     String   @db.Text
+  mediaUrl    String?
+  scheduledAt DateTime
+  publishedAt DateTime?
+  status      TelegramPostStatus @default(SCHEDULED)
+  blogPostId  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+model Order {
+  id            String       @id @default(cuid())
+  orderNumber   String       @unique
+  clientName    String
+  clientEmail   String
+  clientPhone   String?
+  clientCompany String?
+  serviceType   ServiceType
+  description   String       @db.Text
+  budget        Float?
+  deadline      DateTime?
+  status        OrderStatus  @default(NEW)
+  priority      Priority     @default(MEDIUM)
+  quotedPrice   Float?
+  advancePayment Float?
+  balance       Float?
+  assignedTo    String?
+  clientId      String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  assignedUser  User?        @relation(fields: [assignedTo], references: [id])
+  timeline      OrderTimeline[]
+  notes         OrderNote[]
+  progress      OrderProgress[]
+  client        Client?      @relation(fields: [clientId], references: [id])
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderTimeline {
+  id        String   @id @default(cuid())
+  orderId   String
+  event     String
+  details   String?  @db.Text
+  userId    String?
+  createdAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model OrderNote {
+  id        String   @id @default(cuid())
+  orderId   String
+  content   String   @db.Text
+  userId    String
+  isInternal Boolean @default(true)
+  createdAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model OrderProgress {
+  id        String   @id @default(cuid())
+  orderId   String
+  step      String
+  completed Boolean  @default(false)
+  progress  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Client {
+  id          String   @id @default(cuid())
+  name        String
+  email       String?  @unique
+  phone       String?
+  company     String?
+  tags        String[]
+  notes       String?  @db.Text
+  totalSpent  Float    @default(0)
+  ordersCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orders Order[]
+}
+
+model Project {
+  id          String         @id @default(cuid())
+  title       String
+  slug        String         @unique
+  description String         @db.Text
+  category    String
+  tags        String[]
+  imageUrl    String
+  demoUrl     String?
+  githubUrl   String?
+  technologies String[]
+  clientName  String?
+  completedAt DateTime?
+  featured    Boolean        @default(false)
+  status      ProjectStatus  @default(COMPLETED)
+  views       Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([category])
+  @@index([status])
+  @@index([featured])
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  phone       String?
+  company     String?
+  source      String   @default("website")
+  tags        String[]
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([email])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String
+  role          UserRole  @default(ADMIN)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  assignedOrders Order[]
+}
+
+model Settings {
+  id                    String   @id @default(cuid())
+  key                   String   @unique
+  value                 String   @db.Text
+  description           String?
+  updatedAt             DateTime @updatedAt
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  COMPLETED
+  SPAM
+}
+
+enum TelegramPostType {
+  BLOG
+  MARKETING
+  ANNOUNCEMENT
+  CUSTOM
+}
+
+enum TelegramPostStatus {
+  SCHEDULED
+  PUBLISHED
+  FAILED
+  CANCELLED
+}
+
+enum ServiceType {
+  WEBSITE
+  TELEGRAM_BOT
+  CHATBOT
+  AUTOMATION
+  MOBILE_APP
+  CONSULTATION
+  OTHER
+}
+
+enum OrderStatus {
+  NEW
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+}
+
+enum ProjectStatus {
+  IN_PROGRESS
+  COMPLETED
+  ON_HOLD
+  CANCELLED
+}

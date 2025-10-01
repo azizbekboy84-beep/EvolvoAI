@@ -1,0 +1,21 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/generate",
+      "schedule": "0 8 * * *"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "@database-url",
+    "GEMINI_API_KEY": "@gemini-api-key",
+    "TELEGRAM_BOT_TOKEN": "@telegram-bot-token",
+    "TELEGRAM_CHANNEL_ID": "@telegram-channel-id",
+    "TELEGRAM_ADMIN_ID": "@telegram-admin-id",
+    "NEXTAUTH_SECRET": "@nextauth-secret",
+    "CRON_SECRET": "@cron-secret"
+  }
+}

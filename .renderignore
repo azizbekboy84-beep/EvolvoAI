@@ -1,0 +1,39 @@
+# Render ignore file
+# Files and directories to ignore during deployment
+
+# Development
+.env
+.env.local
+.env.development
+.env.test
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Documentation (optional - comment out if you want these deployed)
+# README.md
+# SETUP.md
+# QUICK_START.md
+
+# Scripts (optional - comment out if needed)
+scripts/create-admin.js
+scripts/update-admin-password.js
+scripts/setup-db.ts
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
