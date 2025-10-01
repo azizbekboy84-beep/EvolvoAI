@@ -28,7 +28,7 @@ async function main() {
     // Create HTTP server
     const server = createServer(async (req, res) => {
       try {
-        const parsedUrl = parse(req.url, true);
+        const parsedUrl = parse(req.url || "/", true);
         await handle(req, res, parsedUrl);
       } catch (err) {
         console.error("Error occurred handling", req.url, err);
@@ -37,8 +37,7 @@ async function main() {
       }
     });
 
-    server.listen(port, (err) => {
-      if (err) throw err;
+    server.listen(port, () => {
       console.log(`🚀 Server running at http://${hostname}:${port}/`);
       console.log(`📊 Environment: ${dev ? "Development" : "Production"}`);
       console.log(`⏰ Cron jobs are active`);
