@@ -4,6 +4,14 @@ import { prisma } from "@/lib/prisma";
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
+interface Activity {
+  id: string;
+  type: string;
+  title: string;
+  description: string;
+  time: string;
+}
+
 export async function GET() {
   try {
     const activities: Activity[] = [];
@@ -25,37 +33,20 @@ export async function GET() {
       });
     });
 
-    // Get recent projects
-    const recentProjects = await prisma.project.findMany({
-      take: 2,
+    // Get recent contacts
+    const recentContacts = await prisma.contact.findMany({
+      take: 5,
       orderBy: { createdAt: "desc" },
-      select: { id: true, title: true, createdAt: true },
-    });
+      select: { id: true, name: true, createdAt: true },
+    }).catch(() => []);
 
-    recentProjects.forEach((project) => {
+    recentContacts.forEach((contact) => {
       activities.push({
-        id: `project-${project.id}`,
-        type: "project",
-        title: "Yangi loyiha",
-        description: project.title,
-        time: getTimeAgo(project.createdAt),
-      });
-    });
-
-    // Get recent orders
-    const recentOrders = await prisma.order.findMany({
-      take: 3,
-      orderBy: { createdAt: "desc" },
-      select: { id: true, serviceType: true, createdAt: true },
-    });
-
-    recentOrders.forEach((order) => {
-      activities.push({
-        id: `order-${order.id}`,
-        type: "order",
-        title: "Yangi buyurtma",
-        description: order.serviceType,
-        time: getTimeAgo(order.createdAt),
+        id: `contact-${contact.id}`,
+        type: "contact",
+        title: "Yangi murojaat",
+        description: contact.name,
+        time: getTimeAgo(contact.createdAt),
       });
     });
 
