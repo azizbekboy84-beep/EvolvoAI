@@ -12,8 +12,6 @@ const nextConfig = {
   // Optimize for production
   swcMinify: true,
   compress: true,
-  // For Render deployment
-  output: 'standalone',
   // Increase serverless function timeout
   experimental: {
     serverActions: {
