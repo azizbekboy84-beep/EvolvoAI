@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Mijozlar xabarlari",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function MessagesPage() {
   let contacts: any[] = [];
   

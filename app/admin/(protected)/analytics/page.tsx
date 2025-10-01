@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Website analytics",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function AnalyticsPage() {
   // Get analytics data
   const totalViews = await prisma.blogPost.aggregate({

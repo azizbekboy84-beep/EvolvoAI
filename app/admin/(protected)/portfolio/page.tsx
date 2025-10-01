@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Manage portfolio projects",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function PortfolioPage() {
   let projects: any[] = [];
   

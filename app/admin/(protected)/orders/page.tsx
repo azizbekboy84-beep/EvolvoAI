@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Manage orders",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function OrdersPage({
   searchParams,
 }: {

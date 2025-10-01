@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   title: "Kanal Postlari - EvolvoAI Admin",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function TelegramPostsPage() {
   const posts = await prisma.telegramPost.findMany({
     orderBy: { createdAt: "desc" },

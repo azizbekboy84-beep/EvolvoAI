@@ -18,43 +18,70 @@ git push -u origin main
 - [render.com](https://render.com) ga kiring
 - GitHub bilan login qiling
 
-3. **Blueprint yaratish**
-- "New +" → "Blueprint" ni bosing
-- GitHub repositoriyangizni tanlang
-- Framework avtomatik aniqlanadi (Next.js)
+3. **Web Service yaratish**
+- "New +" → "Web Service" ni bosing
+- GitHub repositoriyangizni tanlang (azizbekboy84-beep/EvolvoAI)
+- Quyidagi sozlamalarni kiriting:
+
+**Build Settings:**
+- **Name**: evolvoai (yoki o'zingiz xohlagan nom)
+- **Region**: Singapore (yoki yaqin region)
+- **Branch**: main
+- **Root Directory**: (bo'sh qoldiring)
+- **Runtime**: Node
+- **Build Command**: `npm install && npx prisma generate && npm run build`
+- **Start Command**: `npm start`
 
 4. **Environment Variables**
-Quyidagi o'zgaruvchilarni qo'shing:
+"Environment" bo'limida quyidagi o'zgaruvchilarni qo'shing:
 
 ```env
-DATABASE_URL=<Render Internal Database URL>
+NODE_ENV=production
+DATABASE_URL=<Keyinroq qo'shiladi>
 GEMINI_API_KEY=sizning_gemini_api_keyingiz
 TELEGRAM_BOT_TOKEN=sizning_telegram_bot_tokeningiz
-TELEGRAM_CHANNEL_ID=@sizinig_kanal_idingiz
+TELEGRAM_CHANNEL_ID=@sizning_kanal_idingiz
 TELEGRAM_ADMIN_ID=sizning_telegram_idingiz
-NEXTAUTH_SECRET=<avto-generatsiya-bo'ladi>
-NEXTAUTH_URL=https://sizinig-app-nomi.onrender.com
-NEXT_PUBLIC_APP_URL=https://sizinig-app-nomi.onrender.com
-CRON_SECRET=<avto-generatsiya-bo'ladi>
-NODE_ENV=production
+NEXTAUTH_SECRET=tasodifiy_32_belgili_string
+NEXTAUTH_URL=https://evolvoai.onrender.com
+NEXT_PUBLIC_APP_URL=https://evolvoai.onrender.com
+CRON_SECRET=tasodifiy_string
+```
+
+**Muhim:** NEXTAUTH_SECRET va CRON_SECRET uchun kuchli tasodifiy stringlar yarating:
+```bash
+# PowerShell da generate qilish:
+-join ((65..90) + (97..122) + (48..57) | Get-Random -Count 32 | % {[char]$_})
 ```
 
 5. **Deploy qiling**
-- "Create Blueprint" tugmasini bosing
+- "Create Web Service" tugmasini bosing
 - 5-10 daqiqada deploy tugaydi
 
 ### Database Setup (Render PostgreSQL)
 
-1. **Render Dashboard'da:**
-   - "Databases" → "New" → "PostgreSQL"
-   - Database yaratilgandan keyin "Internal Database URL" ni nusxalang
-   - Environment Variables'ga `DATABASE_URL` sifatida qo'shing
+1. **PostgreSQL Database yaratish:**
+   - Render dashboard'da "New +" → "PostgreSQL"
+   - Quyidagi sozlamalar:
+     - **Name**: evolvoai-db
+     - **Database**: evolvoai
+     - **User**: evolvoai_user
+     - **Region**: Singapore (Web Service bilan bir xil)
+     - **Plan**: Free
+   - "Create Database" bosing
 
-2. **Database schema yaratish:**
-```bash
-# Render avtomatik ishga tushiradi:
-npm run db:push
-```
+2. **Database URL ni Web Service'ga ulash:**
+   - Database yaratilgandan so'ng "Info" tabida "Internal Database URL" ni ko'ring
+   - Web Service'ingizga o'ting → "Environment"
+   - `DATABASE_URL` o'zgaruvchisini yangilang (Internal Database URL qo'ying)
+   - "Save Changes" bosing
+
+3. **Database schema yaratish:**
+   - Web Service deploy tugagandan so'ng, Render avtomatik `npx prisma generate` ishga tushiradi
+   - Agar kerak bo'lsa, Shell orqali manual run qiling:
+   ```bash
+   npx prisma db push
+   ```
 
 ### Domen sozlash
 

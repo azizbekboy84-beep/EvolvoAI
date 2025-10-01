@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Manage customers",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function CustomersPage() {
   let customers: any[] = [];
   let totalCustomers = 0;

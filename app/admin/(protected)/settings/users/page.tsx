@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   title: "Foydalanuvchilar - EvolvoAI Admin",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function UsersSettingsPage() {
   const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
